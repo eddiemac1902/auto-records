@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,11 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::apiResources(["users"=>"API\UsersController"]);
+
+// Route::post("users/getAll","API\UsersController@postUsers");
+Route::post("users/getAll",function(){
+    return User::latest()->paginate(10);
 });
