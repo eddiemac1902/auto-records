@@ -81,7 +81,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
             <li class="nav-item">
               <router-link :to="{ name: 'dashboard'}" class="nav-link">
-                <i class="nav-icon fa fa-tachometer-alt"></i>
+                <i class="nav-icon fa fa-tachometer-alt text-blue"></i>
                 <p>
                   Dashboard {{-- <span class="right badge badge-danger">New</span> --}}
                 </p>
@@ -90,7 +90,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
             <li class="nav-item has-treeview ">
               <a href="#" class="nav-link ">
-              <i class="nav-icon fa fa-cog"></i>
+              <i class="nav-icon fa fa-cog text-green"></i>
               <p>
                 Management
                 <i class="right fa fa-angle-left"></i>
@@ -98,10 +98,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="#" class="nav-link ">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Active Page</p>
-                </a>
+                  <router-link :to="{ name: 'users'}" class="nav-link ">
+                    <i class="fa fa-users nav-icon"></i>
+                    <p>Users</p>
+                  </router-link>
                 </li>
                 <li class="nav-item">
                   <a href="#" class="nav-link">
@@ -113,20 +113,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </li>
             <li class="nav-item">
               <router-link :to="{ name: 'profile'}" class="nav-link">
-                <i class="nav-icon fa fa-user"></i>
+                <i class="nav-icon fa fa-user text-orange"></i>
                 <p>
                   Profile {{-- <span class="right badge badge-danger">New</span> --}}
                 </p>
                 </r>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
-              <i class="nav-icon fa fa-power-off"></i>
+              <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+              <i class="nav-icon fa fa-power-off text-red"></i>
               <p>
-                Logout
+                {{ __('Logout') }}
                 {{-- <span class="right badge badge-danger">New</span> --}}
               </p>
             </a>
+              <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+              </form>
+
             </li>
           </ul>
         </nav>
