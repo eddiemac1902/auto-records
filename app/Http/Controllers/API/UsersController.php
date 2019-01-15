@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -56,6 +60,42 @@ class UsersController extends Controller
         //
     }
 
+    public function profile()
+    {
+        return auth("api")->user();
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $validateData = $request->validate([
+            "name"=>"required|string|max:191",
+            "email"=>"required|email|max:191,unique:users,email,".auth("api")->user()->id,
+            // "password"=>"required|confirmed|string|min:6",
+            "type"=>"required|string|max:191"
+        ]);
+
+        $user = auth("api")->user();
+        $oldPhoto = $user->photo;
+        if($request->image != $oldPhoto)
+        {
+            $name = time().'.'.explode("/",explode(":",substr($request->image,0,strpos($request->image,";")))[1])[1];
+
+            \Image::make($request->image)->save(public_path('img/profile/').$name);
+
+            $request->merge(["photo"=>$name]);
+
+            //delete photo
+            $userPhoto = public_path("img/profile/").$oldPhoto;
+            if(file_exists($userPhoto) && $oldPhoto!= 'profile.png')
+            {
+                @unlink($userPhoto);
+            }
+        }
+        $user->update($request->except(["password"]));
+        
+        return ["message"=>"success"];
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -65,7 +105,17 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $validateData = $request->validate([
+            "name"=>"required|string|max:191",
+            // "email"=>"required|email|max:191|unique:users,email",
+            "password"=>"sometimes|confirmed|string|min:6",
+            "type"=>"required|string|max:191"
+        ]);
+
+        $user->update($request->all());
+        return ["message"=>"updated"];
     }
 
     /**
@@ -82,8 +132,8 @@ class UsersController extends Controller
         return "success";
     }
 
-    public function postUsers()
-    {
-        return User::latest()->paginate(10);
-    }
+    // public function postUsers()
+    // {
+    //     return User::latest()->paginate(10);
+    // }
 }

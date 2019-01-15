@@ -19,8 +19,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResources(["users"=>"API\UsersController"]);
+Route::get("profile","API\UsersController@profile");
+Route::put("profile","API\UsersController@updateProfile");
 
 // Route::post("users/getAll","API\UsersController@postUsers");
-Route::post("users/getAll",function(){
-    return User::latest()->paginate(10);
-});
+// Route::post("users/getAll",function(){
+//     return User::latest()->paginate(10);
+// });
+

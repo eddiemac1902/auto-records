@@ -32,7 +32,7 @@ Vue.use(VueProgressBar, {
     // color: 'rgb(143,255,199)',
     color: 'yellow',
     failedColor: 'red',
-    height: '3px'
+    height: '6px'
 })
 
 window.Form = Form;
@@ -53,8 +53,10 @@ Vue.filter("myDate", function (created_at) {
 let routes = [
     { path: '/home', name: 'home', component: require('./components/HomeComponent.vue') },
     { path: '/home/dashboard', name: 'dashboard', component: require('./components/DashboardComponent.vue') },
-    { path: '/home/profile', name: 'profile', component: require('./components/ProfileComponent.vue') },
-    { path: '/home/users', name: 'users', component: require('./components/Users/UsersComponent.vue') }
+    { path: '/profile', name: 'profile', component: require('./components/ProfileComponent.vue') },
+    { path: '/home/users', name: 'users', component: require('./components/Users/UsersComponent.vue') },
+    { path: '/developer', name: 'developer', component: require('./components/Developer.vue') },
+
 ]
 
 /**
@@ -67,6 +69,22 @@ Vue.component('example-component', require('./components/ExampleComponent.vue'))
 //can also do it this way
 // Vue.component('example-component', require('./components/DashboardComponent.vue'));
 // Vue.component('example-component', require('./components/ProfileComponent.vue'));
+
+Vue.component(
+    'passport-clients',
+    require('./components/passport/Clients.vue')
+);
+
+Vue.component(
+    'passport-authorized-clients',
+    require('./components/passport/AuthorizedClients.vue')
+);
+
+Vue.component(
+    'passport-personal-access-tokens',
+    require('./components/passport/PersonalAccessTokens.vue')
+);
+
 
 const router = new VueRouter({
     mode: 'history',

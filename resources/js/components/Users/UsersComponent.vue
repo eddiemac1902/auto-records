@@ -8,7 +8,7 @@
 
             <div class="card-tools">
               <div class="input-group input-group-sm" style="width: 300px;">
-                <button class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
+                <button class="btn btn-info" @click="newUserModal">
                   <i class="fa fa-user-plus">Add User</i>
                 </button>
                 <input
@@ -46,7 +46,7 @@
                   <td>{{user.type}}</td>
                   <td>{{user.created_at | myDate }}</td>
                   <td>
-                    <a href="#">
+                    <a @click="editUserModal(user)">
                       <i class="fa fa-edit text-green"></i>
                     </a>
                     <a @click="deleteUser(user.id,user.name)">
@@ -74,7 +74,8 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+            <h5 v-show="!editMode" class="modal-title" id="addUserModalLabel">Add New User</h5>
+            <h5 v-show="editMode" class="modal-title" id="addUserModalLabel">Edit User</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -102,6 +103,7 @@
                   name="email"
                   class="form-control"
                   :class="{ 'is-invalid': form.errors.has('email') }"
+                  :disabled="editMode"
                 >
                 <has-error :form="form" field="email"></has-error>
               </div>
@@ -164,9 +166,10 @@
             <button
               type="button"
               :disabled="form.busy"
-              class="btn btn-primary"
-              @click="createUser"
-            >Create</button>
+              class="btn"
+              :class="!editMode ? 'btn-primary':'btn-warning'"
+              @click="!editMode ? createUser():updateUser(form.id)"
+            >{{editMode ? 'Edit':'Create'}}</button>
           </div>
         </div>
       </div>
@@ -185,9 +188,11 @@
 export default {
   data() {
     return {
+      editMode: false,
       users: {},
       // Create a new form instance
       form: new Form({
+        id: "",
         name: "",
         email: "",
         password: "",
@@ -208,6 +213,18 @@ export default {
     });
   },
   methods: {
+    newUserModal() {
+      this.form.reset();
+      this.editMode = false;
+      $("#addUserModal").modal("show");
+    },
+    editUserModal(user) {
+      this.editMode = true;
+      this.form.errors.errors = {};
+      $("#addUserModal").modal("show");
+      this.form.reset();
+      this.form.fill(user);
+    },
     loadUsers() {
       axios.get("/api/users").then(({ data }) => (this.users = data.data));
       //   axios
@@ -279,6 +296,26 @@ export default {
             });
         }
       });
+    },
+    updateUser(user_id) {
+      this.$Progress.start();
+      this.form
+        .put("/api/users/" + user_id)
+        .then(response => {
+          toast({
+            type: "success",
+            title: "User updated successfully"
+          });
+          $("#addUserModal").modal("hide");
+          Fire.$emit("userCreatedEvent", "user updated");
+          
+        })
+        .catch(error => {
+          //   this.$Progress.error();
+        })
+        .then(() => {
+          this.$Progress.finish();
+        });
     }
   }
 };
