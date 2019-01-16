@@ -1,6 +1,10 @@
 <template>
   <div class="container">
-    <div class="row justify-content-center mt-1">
+
+      <div v-if="!$gate.isAdmin()">
+      <not-found> </not-found>
+      </div>
+    <div class="row justify-content-center mt-1" v-show="$gate.isAdmin()">
       <div class="col-12">
         <div class="card">
           <div class="card-header">
@@ -27,7 +31,7 @@
             </div>
           </div>
           <!-- /.card-header -->
-          <div class="card-body table-responsive p-0">
+          <div class="card-body table-responsive p-0" >
             <table class="table table-hover">
               <tbody>
                 <tr>
@@ -226,7 +230,9 @@ export default {
       this.form.fill(user);
     },
     loadUsers() {
-      axios.get("/api/users").then(({ data }) => (this.users = data.data));
+      if (this.$gate.isAdmin()) {
+        axios.get("/api/users").then(({ data }) => (this.users = data.data));
+      }
       //   axios
       //     .get("/api/users")
       //     .then(function(response) {
@@ -290,7 +296,12 @@ export default {
               Fire.$emit("userCreatedEvent", "user deleted");
               console.log(response);
             })
-            .catch(error => {})
+            .catch(error => {
+              toast({
+                type: "error",
+                title: "Something went wrong, unable to delete User"
+              });
+            })
             .then(response => {
               this.$Progress.finish();
             });
@@ -308,7 +319,6 @@ export default {
           });
           $("#addUserModal").modal("hide");
           Fire.$emit("userCreatedEvent", "user updated");
-          
         })
         .catch(error => {
           //   this.$Progress.error();

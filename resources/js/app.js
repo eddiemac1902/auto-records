@@ -16,6 +16,9 @@ import { Form, HasError, AlertError } from 'vform'
 import moment from 'moment'
 import VueProgressBar from 'vue-progressbar'
 import swal from 'sweetalert2'
+import Gate from './Gate'
+
+Vue.prototype.$gate = new Gate(window.user);
 
 window.swal = swal
 
@@ -83,6 +86,11 @@ Vue.component(
 Vue.component(
     'passport-personal-access-tokens',
     require('./components/passport/PersonalAccessTokens.vue')
+);
+
+Vue.component(
+    'not-found',
+    require('./components/NotFound.vue')
 );
 
 

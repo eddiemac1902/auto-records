@@ -18,8 +18,8 @@
                 class="widget-user-header text-white"
                 style="background: url('./img/photo1.png');height:200px; "
               >
-                <h3 class="widget-user-username">Elizabeth Pierce</h3>
-                <h5 class="widget-user-desc">Web Designer</h5>
+                <h3 class="widget-user-username">{{form.name}}</h3>
+                <h5 class="widget-user-desc">{{form.email}}</h5>
               </div>
               <div class="widget-user-image">
                 <img class="img-circle" :src="getUserPhoto()" alt="User Avatar">
