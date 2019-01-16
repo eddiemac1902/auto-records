@@ -10,6 +10,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 window.Fire = new Vue();
+window._ = require("lodash");
 
 import VueRouter from 'vue-router'
 import { Form, HasError, AlertError } from 'vform'
@@ -78,20 +79,16 @@ Vue.component(
     require('./components/passport/Clients.vue')
 );
 
-Vue.component(
-    'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue')
+Vue.component('passport-authorized-clients', require('./components/passport/AuthorizedClients.vue')
 );
 
-Vue.component(
-    'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue')
+Vue.component('passport-personal-access-tokens', require('./components/passport/PersonalAccessTokens.vue')
 );
 
-Vue.component(
-    'not-found',
-    require('./components/NotFound.vue')
+Vue.component('not-found', require('./components/NotFound.vue')
 );
+
+Vue.component('pagination', require('laravel-vue-pagination'));
 
 
 const router = new VueRouter({
@@ -101,5 +98,19 @@ const router = new VueRouter({
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    data() {
+        return {
+            search: "",
+        }
+    },
+    methods: {
+        searchIt: _.debounce(() => {
+            Fire.$emit("searching");
+        }, 1000),
+
+        printMe() {
+            window.print();
+        }
+    }
 });

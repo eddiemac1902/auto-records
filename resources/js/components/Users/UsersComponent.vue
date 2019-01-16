@@ -1,10 +1,9 @@
 <template>
   <div class="container">
-
-      <div v-if="!$gate.isAdmin()">
-      <not-found> </not-found>
-      </div>
-    <div class="row justify-content-center mt-1" v-show="$gate.isAdmin()">
+    <div v-if="!$gate.isAdminOrAuthor()">
+      <not-found></not-found>
+    </div>
+    <div class="row justify-content-center mt-1" v-else>
       <div class="col-12">
         <div class="card">
           <div class="card-header">
@@ -15,6 +14,7 @@
                 <button class="btn btn-info" @click="newUserModal">
                   <i class="fa fa-user-plus">Add User</i>
                 </button>
+                <a href @click.prevent="$parent.printMe" target="_blank">Print</a>
                 <input
                   type="text"
                   name="table_search"
@@ -31,7 +31,7 @@
             </div>
           </div>
           <!-- /.card-header -->
-          <div class="card-body table-responsive p-0" >
+          <div class="card-body table-responsive p-0">
             <table class="table table-hover">
               <tbody>
                 <tr>
@@ -43,7 +43,7 @@
                   <th>Modify</th>
                 </tr>
 
-                <tr v-for="user in users" :key="user.id">
+                <tr v-for="user in users.data" :key="user.id">
                   <td>{{user.id}}</td>
                   <td>{{user.name | upText}}</td>
                   <td>{{user.email}}</td>
@@ -62,6 +62,9 @@
             </table>
           </div>
           <!-- /.card-body -->
+          <div class="card-footer">
+            <pagination :data="users" @pagination-change-page="getResults"></pagination>
+          </div>
         </div>
         <!-- /.card -->
       </div>
@@ -146,6 +149,9 @@
                   :class="{ 'is-invalid': form.errors.has('type') }"
                 >
                   <option value="admin">Admin</option>
+                  <option value="user">User</option>
+                  <option value="author">Author</option>
+                  <option value="editor">Editor</option>
                 </select>
                 <has-error :form="form" field="type"></has-error>
               </div>
@@ -209,14 +215,49 @@ export default {
     };
   },
   created() {
-    this.loadUsers();
+    // this.loadUsers();
+    this.getResults();
+
+    Fire.$on("searching", () => {
+      this.$Progress.start();
+
+      if (this.$parent.search.length > 0) {
+        axios
+          .get("/api/findUser?q=" + this.$parent.search)
+          .then(response => {
+            this.users = response.data;
+            this.$Progress.finish();
+            console.log(response);
+          })
+          .catch(() => {
+            this.$Progress.finish();
+          });
+      } else {
+        this.getResults();
+      }
+    });
+
     // setInterval(() => this.loadUsers(), 3000);
     Fire.$on("userCreatedEvent", data => {
       //   alert(data);
-      this.loadUsers();
+      // this.loadUsers();
+      this.getResults();
     });
   },
   methods: {
+    // Our method to GET results from a Laravel endpoint
+    getResults(page = 1) {
+      this.$Progress.start();
+      axios
+        .get("/api/users?page=" + page)
+        .then(response => {
+          this.users = response.data;
+          this.$Progress.finish();
+        })
+        .catch(() => {
+          this.$Progress.finish();
+        });
+    },
     newUserModal() {
       this.form.reset();
       this.editMode = false;
@@ -229,25 +270,11 @@ export default {
       this.form.reset();
       this.form.fill(user);
     },
-    loadUsers() {
-      if (this.$gate.isAdmin()) {
-        axios.get("/api/users").then(({ data }) => (this.users = data.data));
-      }
-      //   axios
-      //     .get("/api/users")
-      //     .then(function(response) {
-      //       // handle success
-      //       this.users = response.data;
-      //       console.log(response.data);
-      //     })
-      //     .catch(function(error) {
-      //       // handle error
-      //       console.log(error);
-      //     })
-      //     .then(function() {
-      //       // always executed
-      //     });
-    },
+    // loadUsers() {
+    //   if (this.$gate.isAdminOrAuthor()) {
+    //     axios.get("/api/users").then(({ data }) => (this.users = data.data));
+    //   }
+    // },
     createUser() {
       this.$Progress.start();
       // Submit the form via a POST request

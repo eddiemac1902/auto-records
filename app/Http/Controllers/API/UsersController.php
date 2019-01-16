@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
 class UsersController extends Controller
 {
@@ -20,8 +21,12 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $this->authorize("isAdmin");
-        return User::latest()->where("deleted",0)->paginate(10);
+        // $this->authorize("isAdmin");
+        if(Gate::allows("isAdmin") || Gate::allows("isAuthor") )
+        {
+            return User::latest()->where("deleted",0)->paginate(5);
+        }
+        
     }
 
     /**
@@ -135,8 +140,20 @@ class UsersController extends Controller
         return "success";
     }
 
-    // public function postUsers()
-    // {
-    //     return User::latest()->paginate(10);
-    // }
+    public function search(Request $request)
+    {
+        // return $request->all();
+        $search = $request->get("q");
+        // return ["message"=>$search];
+        if(!empty($search))
+        {
+            // $results = User::where("name","LIKE","%{$search}%")->orWhere("email","LIKE","%{$search}%")->orWhere("type","LIKE","%{$search}%")->get();
+
+            $results = User::where(function($query) use ($search){
+                $query->where("name","LIKE","%{$search}%")->orWhere("email","LIKE","%{$search}%")->orWhere("type","LIKE","%{$search}%");
+            })->paginate(5);
+            return $results;
+        }
+        
+    }
 }

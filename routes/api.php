@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\User;
+// use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResources(["users"=>"API\UsersController"]);
 Route::get("profile","API\UsersController@profile");
 Route::put("profile","API\UsersController@updateProfile");
+
+Route::get("findUser","API\UsersController@search");
 
 // Route::post("users/getAll","API\UsersController@postUsers");
 // Route::post("users/getAll",function(){

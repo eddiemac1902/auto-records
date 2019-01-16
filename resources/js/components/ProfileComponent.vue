@@ -167,6 +167,8 @@
                       >
                         <option value="admin">Admin</option>
                         <option value="user">User</option>
+                        <option value="author">Author</option>
+                        <option value="editor">Editor</option>
                       </select>
                       <has-error :form="form" field="type"></has-error>
                     </div>
