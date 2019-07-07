@@ -14,6 +14,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <title>Laravel Vue SPA</title>
 
   <link rel="stylesheet" type="text/css" href="{{asset('css/app.css')}}">
+
+  <style>
+    /* create padding for nested links in menu */
+
+    .sidebar-dark-primary .nav-treeview>.nav-item>.nav-link {
+      color: #C2C7D0;
+      padding-left: 30px;
+    }
+  </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -59,7 +68,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <a href="index3.html" class="brand-link">
       <img src="{{asset('img/project.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-light">Lara Start</span>
+      <span class="brand-text font-weight-light">Records System</span>
     </a>
 
       <!-- Sidebar -->
@@ -88,9 +97,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </router-link>
             </li>
 
+            <li class="nav-item">
+              <router-link :to="{ name: 'arrivals'}" class="nav-link">
+                <i class="nav-icon fa fa-truck text-yellow"></i>
+                <p>
+                  Arrivals {{-- <span class="right badge badge-danger">New</span> --}}
+                </p>
+              </router-link>
+            </li>
+
             <li class="nav-item has-treeview ">
               <a href="#" class="nav-link ">
-              <i class="nav-icon fa fa-cog text-green"></i>
+              <i class="nav-icon fa fa-tasks text-green"></i>
               <p>
                 Management
                 <i class="right fa fa-angle-left"></i>
@@ -103,25 +121,51 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <p>Users</p>
                   </router-link>
                 </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Inactive Page</p>
-                </a>
-                </li>
+
               </ul>
             </li>
 
-            @can("isAdmin")
+            <li class="nav-item has-treeview ">
+              <a href="#" class="nav-link ">
+              <i class="nav-icon fa fa-cog text-green"></i>
+              <p>
+                Settings
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item  has-treeview">
+                  <a href="#" class="nav-link ">
+
+                    <p>
+                      Cars
+                      <i class="right fa fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item  has-treeview">
+                      <router-link :to="{ name: 'services'}" class="nav-link ">
+                        <i class="fa fa-users nav-icon"></i>
+                        <p>Services</p>
+                      </router-link>
+                    </li>
+
+                  </ul>
+                </li>
+
+              </ul>
+            </li>
+
+            {{-- @can("isAdmin")
             <li class="nav-item">
               <router-link :to="{ name: 'developer'}" class="nav-link">
                 <i class="nav-icon fa fa-tachometer-alt text-white"></i>
                 <p>
-                  Developer {{-- <span class="right badge badge-danger">New</span> --}}
+                  Developer {{-- <span class="right badge badge-danger">New</span>
                 </p>
               </router-link>
             </li>
-            @endcan
+            @endcan --}}
 
             <li class="nav-item">
               <router-link :to="{ name: 'profile'}" class="nav-link">
@@ -196,6 +240,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <!--    scripts-->
   <script src="{{asset('js/app.js')}}"></script>
+  <style>
+    /* Over the pointer-events:none, set the cursor to not-allowed.
+    On this way you will have a more user friendly cursor. */
+
+    .disabledTab {
+      cursor: not-allowed;
+    }
+
+    /* Clicks are not permitted and change the opacity. */
+
+    li.disabledTab>a[data-toggle="pill"] {
+      pointer-events: none;
+      filter: alpha(opacity=65);
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      opacity: .65;
+    }
+  </style>
 </body>
 
 </html>

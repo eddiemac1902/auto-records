@@ -3,9 +3,9 @@
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card card-default">
-          <div class="card-header">Home Component</div>
+          <div class="card-header">Welcome</div>
 
-          <div class="card-body">I'm an Home component.</div>
+          <div class="card-body">Welcome to IIT Auto S</div>
         </div>
       </div>
     </div>

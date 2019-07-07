@@ -51,7 +51,10 @@ Vue.filter("upText", function (text) {
 });
 
 Vue.filter("myDate", function (created_at) {
-    return moment(created_at).format("MMMM Do YYYY");
+    if (created_at) {
+        return moment(created_at).format("MMM Do YYYY h:mm:ss a");
+    }
+
 })
 
 let routes = [
@@ -60,6 +63,8 @@ let routes = [
     { path: '/profile', name: 'profile', component: require('./components/ProfileComponent.vue') },
     { path: '/home/users', name: 'users', component: require('./components/Users/UsersComponent.vue') },
     { path: '/developer', name: 'developer', component: require('./components/Developer.vue') },
+    { path: '/arrivals', name: 'arrivals', component: require('./components/Arrivals/Arrivals.vue') },
+    { path: '/settings/cars/services', name: 'services', component: require('./components/Cars/Services.vue') },
 
 ]
 
